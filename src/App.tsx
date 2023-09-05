@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useTimer } from "./core";
+import { Directory } from "./directory";
+import { Home, About, Work, Contact, Blog } from "./pages";
+import { Welcome } from "./welcome";
 
-function App() {
+export const App = () => {
+  const [shouldShowWelcome, setShouldShowWelcome] = useState(true);
+  const showWelcome = !useTimer(9000) && shouldShowWelcome;
+
+  useEffect(() => {
+    if (window.location.pathname !== "/")
+      setShouldShowWelcome(false);
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <Router>
+      <div style={{ height: "100%", width: "100%" }}>
+        <Directory />
 
-export default App;
+        <Routes>
+          <Route path="/" element={showWelcome ? <Welcome /> : <Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
